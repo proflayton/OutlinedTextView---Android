@@ -18,6 +18,8 @@ An OutlinedTextView in android
         android:id="@+id/outlinedTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:stroke_color="#333"
+        app:stroke_width="10"
         android:gravity="center"
         android:text="50%"
         android:textStyle="italic|bold"
