@@ -9,10 +9,10 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 public class OutlinedTextView extends TextView {
-
-	private String strokeColor = "#000";
+private String strokeColor = "#000";
 	private int strokeWidth = 3;
 	private TextPaint paint = null;
+	private boolean strokeEnabled = true;
 	
 	public OutlinedTextView(Context context){
 		super(context);
@@ -43,9 +43,20 @@ public class OutlinedTextView extends TextView {
 	public int getStrokeWidth(){
 		return this.strokeWidth;
 	}
+	
+	public void setStrokeEnabled(boolean strokeEnabled) {
+		this.strokeEnabled = strokeEnabled;
+	}
+	public boolean getStrokeEnabled() {
+		return this.strokeEnabled;
+	}
  
 	@Override
 	protected void onDraw(Canvas canvas){
+		if(!this.strokeEnabled){
+			super.onDraw(canvas);
+			return;
+		}
 		if(paint == null) paint = new TextPaint();
 		
 		TextPaint otherPaint = getPaint();
@@ -56,13 +67,29 @@ public class OutlinedTextView extends TextView {
 		
 		paint.setStyle(Paint.Style.STROKE);
 		try{
-			paint.setColor(Color.parseColor(strokeColor));
+		paint.setColor(Color.parseColor(strokeColor));
 		} catch (Exception e) { paint.setColor(Color.BLACK); }
 		paint.setStrokeWidth(strokeWidth);
 		
 		String text = getText().toString();
-		canvas.drawText(text, (getWidth() - paint.measureText(text))/2, getBaseline(), paint);
+		int gravity = this.getGravity();
+		float x = 0;
+		
+		//53 = Right
+		//51 = Left
+		//Was getting the wrong integers for Gravity.RIGHT and Gravity.LEFT
+		if(gravity == 53){
+			x = getWidth() - paint.measureText(text);
+		}
+		else if (gravity == 51 || gravity == Gravity.NO_GRAVITY){
+			
+		}
+		else if (gravity == Gravity.CENTER) {
+			x = (getWidth() - paint.measureText(text))/2;
+		}
+		canvas.drawText(text, x, getBaseline(), paint);
 		super.onDraw(canvas);
 	}
+	
 	
 }
